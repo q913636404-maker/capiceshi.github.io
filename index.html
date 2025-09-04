@@ -50,6 +50,71 @@
       }
     }
   </style>
+  POST /ad_accounts/{ad_account_id}/events
+  curl -X POST https://api.pinterest.com/v5/ad_accounts/{ad_account_id}/events --header 'Authorization: Bearer <access_token>'
+    {
+  "data": [
+    {
+      "action_source": "app_ios",
+      "event_id": "eventid0001",
+      "event_name": "checkout",
+      "event_time": 1756979395,
+      "user_data": {
+        "client_ip_address": "123.45.1234",
+        "client_user_agent": "clientua",
+        "em": [
+          "411e44ce1261728ffd2c0686e44e3fffe413c0e2c5adc498bc7da883d476b9c8"
+        ],
+        "hashed_maids": [
+          "411e44ce1261728ffd2c0686e44e3fffe413c0e2c5adc498bc7da883d476b9c8"
+        ]
+      },
+      "custom_data": {}
+    }
+  ]
+}
+    {
+  "data": [
+    {
+      "action_source": "app_ios",
+      "event_id": "eventid0001",
+      "event_name": "signup",
+      "event_time": 1756979395,
+      "user_data": {
+        "client_ip_address": "123.45.1234",
+        "client_user_agent": "clientua",
+        "em": [
+          "411e44ce1261728ffd2c0686e44e3fffe413c0e2c5adc498bc7da883d476b9c8"
+        ],
+        "hashed_maids": [
+          "411e44ce1261728ffd2c0686e44e3fffe413c0e2c5adc498bc7da883d476b9c8"
+        ]
+      },
+      "custom_data": {}
+    }
+  ]
+}
+    {
+  "data": [
+    {
+      "action_source": "app_ios",
+      "event_id": "eventid0001",
+      "event_name": "add_to_cart",
+      "event_time": 1756979395,
+      "user_data": {
+        "client_ip_address": "123.45.1234",
+        "client_user_agent": "clientua",
+        "em": [
+          "411e44ce1261728ffd2c0686e44e3fffe413c0e2c5adc498bc7da883d476b9c8"
+        ],
+        "hashed_maids": [
+          "411e44ce1261728ffd2c0686e44e3fffe413c0e2c5adc498bc7da883d476b9c8"
+        ]
+      },
+      "custom_data": {}
+    }
+  ]
+}
 </head>
 
 <body class="font-inter bg-light text-dark antialiased">
