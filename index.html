@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>短剧频道 - 精彩剧集随时看</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  
+  <!-- 配置Tailwind -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#165DFF',
+            secondary: '#FF7D00',
+            dark: '#1D2129',
+            light: '#F5F7FA',
+            'gray-medium': '#86909C'
+          },
+          fontFamily: {
+            inter: ['Inter', 'system-ui', 'sans-serif'],
+          },
+        },
+      }
+    }
+  </script>
+  
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .content-auto {
+        content-visibility: auto;
+      }
+      .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+      .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+      }
+      .text-shadow {
+        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+      }
+      .card-hover {
+        transition: all 0.3s ease;
+      }
+      .card-hover:hover {
+        transform: translateY(-5px);
+      }
+    }
+  </style>
+</head>
+
+<body class="font-inter bg-light text-dark antialiased">
+  <!-- 导航栏 -->
+  <header class="fixed top-0 left-0 right-0 bg-white/90 backdrop-blur-sm shadow-sm z-50 transition-all duration-300">
+    <div class="container mx-auto px-4">
+      <div class="flex items-center justify-between h-16">
+        <!-- Logo -->
+        <div class="flex items-center">
+          <a href="#" class="flex items-center">
+            <i class="fa fa-play-circle text-primary text-2xl mr-2"></i>
+            <span class="text-xl font-bold text-primary">剧好看</span>
+          </a>
+        </div>
+        
+        <!-- 搜索框 - 仅在中等以上屏幕显示 -->
+        <div class="hidden md:flex items-center flex-1 max-w-md mx-8">
+          <div class="relative w-full">
+            <input type="text" placeholder="搜索短剧名称或演员..." 
+                  class="w-full py-2 px-4 pl-10 rounded-full bg-light border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all">
+            <i class="fa fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-medium"></i>
+          </div>
+        </div>
+        
+        <!-- 导航菜单 -->
+        <nav class="flex items-center space-x-1 md:space-x-4">
+          <button class="p-2 rounded-full hover:bg-light transition-colors md:hidden" id="searchToggle">
+            <i class="fa fa-search text-gray-medium"></i>
+          </button>
+          <a href="#" class="p-2 rounded-full hover:bg-light transition-colors relative">
+            <i class="fa fa-bell-o text-gray-medium"></i>
+            <span class="absolute top-1 right-1 w-2 h-2 bg-secondary rounded-full"></span>
+          </a>
+          <a href="#" class="p-2 rounded-full hover:bg-light transition-colors">
+            <i class="fa fa-user-o text-gray-medium"></i>
+          </a>
+          <a href="#" class="hidden md:flex items-center bg-secondary text-white px-4 py-2 rounded-full hover:bg-secondary/90 transition-colors">
+            <i class="fa fa-diamond mr-2"></i>
+            <span>充值</span>
+          </a>
+          <button class="md:hidden p-2 rounded-full hover:bg-light transition-colors" id="menuToggle">
+            <i class="fa fa-bars text-gray-medium"></i>
+          </button>
+        </nav>
+      </div>
+      
+      <!-- 移动端搜索框 - 默认隐藏 -->
+      <div class="md:hidden pb-4 hidden" id="mobileSearch">
+        <div class="relative w-full">
+          <input type="text" placeholder="搜索短剧名称或演员..." 
+                class="w-full py-2 px-4 pl-10 rounded-full bg-light border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all">
+          <i class="fa fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-medium"></i>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 分类导航栏 -->
+    <div class="border-t border-gray-100 overflow-x-auto scrollbar-hide">
+      <div class="container mx-auto px-4">
+        <div class="flex space-x-1 md:space-x-6 py-3 min-w-max">
+          <a href="#" class="px-3 py-1.5 rounded-full bg-primary text-white text-sm font-medium">全部</a>
+          <a href="#" class="px-3 py-1.5 rounded-full hover:bg-gray-100 text-sm font-medium transition-colors">都市</a>
+          <a href="#" class="px-3 py-1.5 rounded-full hover:bg-gray-100 text-sm font-medium transition-colors">言情</a>
+          <a href="#" class="px-3 py-1.5 rounded-full hover:bg-gray-100 text-sm font-medium transition-colors">悬疑</a>
+          <a href="#" class="px-3 py-1.5 rounded-full hover:bg-gray-100 text-sm font-medium transition-colors">古装</a>
+          <a href="#" class="px-3 py-1.5 rounded-full hover:bg-gray-100 text-sm font-medium transition-colors">奇幻</a>
+          <a href="#" class="px-3 py-1.5 rounded-full hover:bg-gray-100 text-sm font-medium transition-colors">喜剧</a>
+          <a href="#" class="px-3 py-1.5 rounded-full hover:bg-gray-100 text-sm font-medium transition-colors">动作</a>
+          <a href="#" class="px-3 py-1.5 rounded-full hover:bg-gray-100 text-sm font-medium transition-colors">家庭</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- 主内容区 -->
+  <main class="pt-48 pb-20">
+    <!-- 热门推荐 -->
+    <section class="container mx-auto px-4 mb-12">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-[clamp(1.5rem,3vw,2rem)] font-bold">热门推荐</h2>
+        <a href="#" class="text-primary font-medium flex items-center hover:underline">
+          查看更多 <i class="fa fa-angle-right ml-1"></i>
+        </a>
+      </div>
+      
+      <!-- 主打推荐 -->
+      <div class="relative rounded-2xl overflow-hidden mb-8 group">
+        <img src="https://picsum.photos/1200/400?random=1" alt="热门短剧《都市迷踪》封面" class="w-full h-[clamp(180px,40vw,400px)] object-cover transition-transform duration-700 group-hover:scale-105">
+        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
+        
+        <div class="absolute bottom-0 left-0 right-0 p-6 text-white">
+          <div class="flex items-center mb-3">
+            <span class="bg-secondary text-white text-xs px-2 py-1 rounded-full mr-2">都市</span>
+            <span class="bg-primary/80 text-white text-xs px-2 py-1 rounded-full">爆款</span>
+          </div>
+          
+          <h3 class="text-[clamp(1.2rem,3vw,1.8rem)] font-bold mb-2 text-shadow">都市迷踪</h3>
+          
+          <p class="text-white/80 text-sm md:text-base mb-4 max-w-2xl line-clamp-2">
+            一场突如其来的失踪案，牵扯出城市背后的巨大阴谋，记者林峰将如何揭开真相？
+          </p>
+          
+          <div class="flex items-center justify-between">
+            <div class="flex items-center">
+              <img src="https://picsum.photos/100/100?random=101" alt="主演张明" class="w-8 h-8 rounded-full border-2 border-white/50 mr-2">
+              <span class="text-sm">主演：张明、李华</span>
+            </div>
+            
+            <button class="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-full flex items-center transition-all transform hover:scale-105">
+              <i class="fa fa-play mr-2"></i> 立即观看
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- 分类短剧展示 -->
+    <section class="container mx-auto px-4 mb-12">
+      <h2 class="text-[clamp(1.3rem,2.5vw,1.8rem)] font-bold mb-6">为你推荐</h2>
+      
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
+        <!-- 短剧卡片 1 -->
+        <div class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md card-hover">
+          <div class="relative">
+            <img src="https://picsum.photos/400/500?random=2" alt="短剧《古风奇缘》封面" class="w-full aspect-[3/4] object-cover">
+            <span class="absolute top-2 left-2 bg-primary text-white text-xs px-2 py-1 rounded">古装</span>
+            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-3">
+              <span class="text-white text-xs bg-secondary/90 px-2 py-0.5 rounded-full">
+                <i class="fa fa-fire mr-1"></i> 9.2分
+              </span>
+            </div>
+          </div>
+          
+          <div class="p-3">
+            <h3 class="font-bold text-base mb-1 line-clamp-1">古风奇缘</h3>
+            <p class="text-gray-medium text-xs mb-2 line-clamp-2">跨越千年的爱恋，一场命中注定的相遇...</p>
+            
+            <div class="flex items-center justify-between">
+              <div class="flex -space-x-1">
+                <img src="https://picsum.photos/100/100?random=102" alt="演员头像" class="w-5 h-5 rounded-full border border-white">
+                <img src="https://picsum.photos/100/100?random=103" alt="演员头像" class="w-5 h-5 rounded-full border border-white">
+              </div>
+              
+              <button class="text-primary text-xs font-medium hover:underline" data-drama-id="1">
+                查看剧集 <i class="fa fa-angle-right ml-1"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 短剧卡片 2 -->
+        <div class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md card-hover">
+          <div class="relative">
+            <img src="https://picsum.photos/400/500?random=3" alt="短剧《悬疑公寓》封面" class="w-full aspect-[3/4] object-cover">
+            <span class="absolute top-2 left-2 bg-primary text-white text-xs px-2 py-1 rounded">悬疑</span>
+            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-3">
+              <span class="text-white text-xs bg-secondary/90 px-2 py-0.5 rounded-full">
+                <i class="fa fa-fire mr-1"></i> 8.9分
+              </span>
+            </div>
+          </div>
+          
+          <div class="p-3">
+            <h3 class="font-bold text-base mb-1 line-clamp-1">悬疑公寓</h3>
+            <p class="text-gray-medium text-xs mb-2 line-clamp-2">每一层都有秘密，你敢住到第几层？</p>
+            
+            <div class="flex items-center justify-between">
+              <div class="flex -space-x-1">
+                <img src="https://picsum.photos/100/100?random=104" alt="演员头像" class="w-5 h-5 rounded-full border border-white">
+                <img src="https://picsum.photos/100/100?random=105" alt="演员头像" class="w-5 h-5 rounded-full border border-white">
+              </div>
+              
+              <button class="text-primary text-xs font-medium hover:underline" data-drama-id="2">
+                查看剧集 <i class="fa fa-angle-right ml-1"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 短剧卡片 3 -->
+        <div class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md card-hover">
+          <div class="relative">
+            <img src="https://picsum.photos/400/500?random=4" alt="短剧《爱情密码》封面" class="w-full aspect-[3/4] object-cover">
+            <span class="absolute top-2 left-2 bg-primary text-white text-xs px-2 py-1 rounded">言情</span>
+            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-3">
+              <span class="text-white text-xs bg-secondary/90 px-2 py-0.5 rounded-full">
+                <i class="fa fa-fire mr-1"></i> 9.5分
+              </span>
+            </div>
+          </div>
+          
+          <div class="p-3">
+            <h3 class="font-bold text-base mb-1 line-clamp-1">爱情密码</h3>
+            <p class="text-gray-medium text-xs mb-2 line-clamp-2">数学家与艺术家的爱情，需要解开多少公式？</p>
+            
+            <div class="flex items-center justify-between">
+              <div class="flex -space-x-1">
+                <img src="https://picsum.photos/100/100?random=106" alt="演员头像" class="w-5 h-5 rounded-full border border-white">
+                <img src="https://picsum.photos/100/100?random=107" alt="演员头像" class="w-5 h-5 rounded-full border border-white">
+              </div>
+              
+              <button class="text-primary text-xs font-medium hover:underline" data-drama-id="3">
+                查看剧集 <i class="fa fa-angle-right ml-1"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 短剧卡片 4 -->
+        <div class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md card-hover">
+          <div class="relative">
+            <img src="https://picsum.photos/400/500?random=5" alt="短剧《奇幻旅程》封面" class="w-full aspect-[3/4] object-cover">
+            <span class="absolute top-2 left-2 bg-primary text-white text-xs px-2 py-1 rounded">奇幻</span>
+            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-3">
+              <span class="text-white text-xs bg-secondary/90 px-2 py-0.5 rounded-full">
+                <i class="fa fa-fire mr-1"></i> 8.7分
+              </span>
+            </div>
+          </div>
+          
+          <div class="p-3">
+            <h3 class="font-bold text-base mb-1 line-clamp-1">奇幻旅程</h3>
+            <p class="text-gray-medium text-xs mb-2 line-clamp-2">误入魔法世界的少年，能否找到回家的路？</p>
+            
+            <div class="flex items-center justify-between">
+              <div class="flex -space-x-1">
+                <img src="https://picsum.photos/100/100?random=108" alt="演员头像" class="w-5 h-5 rounded-full border border-white">
+                <img src="https://picsum.photos/100/100?random=109" alt="演员头像" class="w-5 h-5 rounded-full border border-white">
+              </div>
+              
+              <button class="text-primary text-xs font-medium hover:underline" data-drama-id="4">
+                查看剧集 <i class="fa fa-angle-right ml-1"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 短剧卡片 5 -->
+        <div class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md card-hover">
+          <div class="relative">
+            <img src="https://picsum.photos/400/500?random=6" alt="短剧《家庭趣事》封面" class="w-full aspect-[3/4] object-cover">
+            <span class="absolute top-2 left-2 bg-primary text-white text-xs px-2 py-1 rounded">喜剧</span>
+            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-3">
+              <span class="text-white text-xs bg-secondary/90 px-2 py-0.5 rounded-full">
+                <i class="fa fa-fire mr-1"></i> 9.1分
+              </span>
+            </div>
+          </div>
+          
+          <div class="p-3">
+            <h3 class="font-bold text-base mb-1 line-clamp-1">家庭趣事</h3>
+            <p class="text-gray-medium text-xs mb-2 line-clamp-2">一家四口的搞笑日常，笑料不断...</p>
+            
+            <div class="flex items-center justify-between">
+              <div class="flex -space-x-1">
+                <img src="https://picsum.photos/100/100?random=110" alt="演员头像" class="w-5 h-5 rounded-full border border-white">
+                <img src="https://picsum.photos/100/100?random=111" alt="演员头像" class="w-5 h-5 rounded-full border border-white">
+              </div>
+              
+              <button class="text-primary text-xs font-medium hover:underline" data-drama-id="5">
+                查看剧集 <i class="fa fa-angle-right ml-1"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- 最新上线 -->
+    <section class="container mx-auto px-4 mb-12">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-[clamp(1.3rem,2.5vw,1.8rem)] font-bold">最新上线</h2>
+        <a href="#" class="text-primary font-medium flex items-center hover:underline">
+          更多新剧 <i class="fa fa-angle-right ml-1"></i>
+        </a>
+      </div>
+      
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
+        <!-- 最新短剧卡片 1 -->
+        <div class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md card-hover">
+          <div class="relative">
+            <img src="https://picsum.photos/400/500?random=7" alt="短剧《极速追击》封面" class="w-full aspect-[3/4] object-cover">
+            <span class="absolute top-2 left-2 bg-primary text-white text-xs px-2 py-1 rounded">动作</span>
+            <span class="absolute top-2 right-2 bg-secondary text-white text-xs px-2 py-1 rounded-full">新上线</span>
+          </div>
+          
+          <div class="p-3">
+            <h3 class="font-bold text-base mb-1 line-clamp-1">极速追击</h3>
+            <p class="text-gray-medium text-xs mb-2 line-clamp-1">警匪追逐，生死时速</p>
+            
+            <button class="text-primary text-xs font-medium hover:underline w-full mt-2" data-drama-id="6">
+              查看剧集 <i class="fa fa-angle-right ml-1"></i>
+            </button>
+          </div>
+        </div>
+        
+        <!-- 最新短剧卡片 2 -->
+        <div class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md card-hover">
+          <div class="relative">
+            <img src="https://picsum.photos/400/500?random=8" alt="短剧《宫廷秘史》封面" class="w-full aspect-[3/4] object-cover">
+            <span class="absolute top-2 left-2 bg-primary text-white text-xs px-2 py-1 rounded">古装</span>
+            <span class="absolute top-2 right-2 bg-secondary text-white text-xs px-2 py-1 rounded-full">新上线</span>
+          </div>
+          
+          <div class="p-3">
+            <h3 class="font-bold text-base mb-1 line-clamp-1">宫廷秘史</h3>
+            <p class="text-gray-medium text-xs mb-2 line-clamp-1">深宫内院的权力游戏</p>
+            
+            <button class="text-primary text-xs font-medium hover:underline w-full mt-2" data-drama-id="7">
+              查看剧集 <i class="fa fa-angle-right ml-1"></i>
+            </button>
+          </div>
+        </div>
+        
+        <!-- 最新短剧卡片 3 -->
+        <div class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md card-hover">
+          <div class="relative">
+            <img src="https://picsum.photos/400/500?random=9" alt="短剧《未来世界》封面" class="w-full aspect-[3/4] object-cover">
+            <span class="absolute top-2 left-2 bg-primary text-white text-xs px-2 py-1 rounded">科幻</span>
+            <span class="absolute top-2 right-2 bg-secondary text-white text-xs px-2 py-1 rounded-full">新上线</span>
+          </div>
+          
+          <div class="p-3">
+            <h3 class="font-bold text-base mb-1 line-clamp-1">未来世界</h3>
+            <p class="text-gray-medium text-xs mb-2 line-clamp-1">2077年的人机之恋</p>
+            
+            <button class="text-primary text-xs font-medium hover:underline w-full mt-2" data-drama-id="8">
+              查看剧集 <i class="fa fa-angle-right ml-1"></i>
+            </button>
+          </div>
+        </div>
+        
+        <!-- 最新短剧卡片 4 -->
+        <div class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md card-hover">
+          <div class="relative">
+            <img src="https://picsum.photos/400/500?random=10" alt="短剧《乡村教师》封面" class="w-full aspect-[3/4] object-cover">
+            <span class="absolute top-2 left-2 bg-primary text-white text-xs px-2 py-1 rounded">剧情</span>
+            <span class="absolute top-2 right-2 bg-secondary text-white text-xs px-2 py-1 rounded-full">新上线</span>
+          </div>
+          
+          <div class="p-3">
+            <h3 class="font-bold text-base mb-1 line-clamp-1">乡村教师</h3>
+            <p class="text-gray-medium text-xs mb-2 line-clamp-1">用知识改变命运</p>
+            
+            <button class="text-primary text-xs font-medium hover:underline w-full mt-2" data-drama-id="9">
+              查看剧集 <i class="fa fa-angle-right ml-1"></i>
+            </button>
+          </div>
+        </div>
+        
+        <!-- 最新短剧卡片 5 -->
+        <div class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md card-hover">
+          <div class="relative">
+            <img src="https://picsum.photos/400/500?random=11" alt="短剧《美食侦探》封面" class="w-full aspect-[3/4] object-cover">
+            <span class="absolute top-2 left-2 bg-primary text-white text-xs px-2 py-1 rounded">喜剧</span>
+            <span class="absolute top-2 right-2 bg-secondary text-white text-xs px-2 py-1 rounded-full">新上线</span>
+          </div>
+          
+          <div class="p-3">
+            <h3 class="font-bold text-base mb-1 line-clamp-1">美食侦探</h3>
+            <p class="text-gray-medium text-xs mb-2 line-clamp-1">舌尖上的谜案</p>
+            
+            <button class="text-primary text-xs font-medium hover:underline w-full mt-2" data-drama-id="10">
+              查看剧集 <i class="fa fa-angle-right ml-1"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- 充值优惠区 -->
+    <section class="container mx-auto px-4 mb-12">
+      <div class="bg-gradient-to-r from-primary to-primary/80 rounded-2xl overflow-hidden">
+        <div class="grid md:grid-cols-2 gap-6">
+          <div class="p-6 md:p-10 flex flex-col justify-center">
+            <h2 class="text-[clamp(1.3rem,2.5vw,1.8rem)] font-bold text-white mb-4">解锁更多精彩剧情</h2>
+            <p class="text-white/80 mb-6">前5集免费观看，第6集起需解锁。充值会员，畅享全部内容，更有专属福利等你拿！</p>
+            
+            <div class="space-y-3 mb-6">
+              <div class="flex items-center text-white">
+                <i class="fa fa-check-circle mr-3 text-secondary"></i>
+                <span>会员专享高清画质</span>
+              </div>
+              <div class="flex items-center text-white">
+                <i class="fa fa-check-circle mr-3 text-secondary"></i>
+                <span>无广告打扰，流畅观看</span>
+              </div>
+              <div class="flex items-center text-white">
+                <i class="fa fa-check-circle mr-3 text-secondary"></i>
+                <span>新剧抢先看，独家内容</span>
+              </div>
+            </div>
+            
+            <button class="bg-secondary hover:bg-secondary/90 text-white px-6 py-3 rounded-full font-medium self-start transition-all transform hover:scale-105">
+              立即充值 <i class="fa fa-arrow-right ml-2"></i>
+            </button>
+          </div>
+          
+          <div class="hidden md:block relative">
+            <img src="https://picsum.photos/600/400?random=20" alt="充值会员享受更多内容" class="absolute inset-0 w-full h-full object-cover">
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- 页脚 -->
+  <footer class="bg-white border-t border-gray-100 py-8">
+    <div class="container mx-auto px-4">
+      <div class="flex flex-col md:flex-row justify-between items-center">
+        <div class="flex items-center mb-4 md:mb-0">
+          <i class="fa fa-play-circle text-primary text-2xl mr-2"></i>
+          <span class="text-xl font-bold text-primary">剧好看</span>
+        </div>
+        
+        <div class="flex flex-wrap justify-center gap-x-6 gap-y-2 mb-4 md:mb-0">
+          <a href="#" class="text-gray-medium hover:text-primary transition-colors">关于我们</a>
+          <a href="#" class="text-gray-medium hover:text-primary transition-colors">联系客服</a>
+          <a href="#" class="text-gray-medium hover:text-primary transition-colors">充值中心</a>
+          <a href="#" class="text-gray-medium hover:text-primary transition-colors">用户协议</a>
+          <a href="#" class="text-gray-medium hover:text-primary transition-colors">隐私政策</a>
+        </div>
+        
+        <div class="flex space-x-4">
+          <a href="#" class="w-8 h-8 rounded-full bg-light flex items-center justify-center text-gray-medium hover:bg-primary hover:text-white transition-colors">
+            <i class="fa fa-weibo"></i>
+          </a>
+          <a href="#" class="w-8 h-8 rounded-full bg-light flex items-center justify-center text-gray-medium hover:bg-primary hover:text-white transition-colors">
+            <i class="fa fa-wechat"></i>
+          </a>
+          <a href="#" class="w-8 h-8 rounded-full bg-light flex items-center justify-center text-gray-medium hover:bg-primary hover:text-white transition-colors">
+            <i class="fa fa-qq"></i>
+          </a>
+        </div>
+      </div>
+      
+      <div class="text-center text-gray-medium text-sm mt-6">
+        © 2023 剧好看短剧频道 版权所有
+      </div>
+    </div>
+  </footer>
+
+  <!-- 剧集模态框 -->
+  <div class="fixed inset-0 bg-black/70 z-50 hidden flex items-center justify-center p-4" id="episodeModal">
+    <div class="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+      <div class="sticky top-0 bg-white z-10 px-6 py-4 border-b border-gray-100 flex justify-between items-center">
+        <h3 class="text-xl font-bold" id="modalDramaTitle">剧集列表</h3>
+        <button id="closeModal" class="text-gray-medium hover:text-dark">
+          <i class="fa fa-times text-xl"></i>
+        </button>
+      </div>
+      
+      <div class="p-6">
+        <div class="flex flex-col md:flex-row gap-6 mb-6">
+          <img src="https://picsum.photos/300/400?random=30" alt="短剧封面" class="w-full md:w-1/3 rounded-lg object-cover aspect-[3/4]">
+          
+          <div class="flex-1">
+            <div class="flex items-center mb-3">
+              <span class="bg-primary text-white text-xs px-2 py-1 rounded-full mr-2" id="modalDramaGenre">都市</span>
+              <span class="text-gray-medium text-sm"><i class="fa fa-eye mr-1"></i> 123.4万次观看</span>
+            </div>
+            
+            <p class="text-gray-medium text-sm mb-4" id="modalDramaDesc">
+              一场突如其来的失踪案，牵扯出城市背后的巨大阴谋，记者林峰将如何揭开真相？
+            </p>
+            
+            <div class="mb-4">
+              <h4 class="font-medium text-sm mb-2">主演</h4>
+              <div class="flex flex-wrap gap-2">
+                <div class="flex flex-col items-center">
+                  <img src="https://picsum.photos/100/100?random=101" alt="演员张明" class="w-10 h-10 rounded-full mb-1">
+                  <span class="text-xs">张明</span>
+                </div>
+                <div class="flex flex-col items-center">
+                  <img src="https://picsum.photos/100/100?random=112" alt="演员李华" class="w-10 h-10 rounded-full mb-1">
+                  <span class="text-xs">李华</span>
+                </div>
+                <div class="flex flex-col items-center">
+                  <img src="https://picsum.photos/100/100?random=113" alt="演员王芳" class="w-10 h-10 rounded-full mb-1">
+                  <span class="text-xs">王芳</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="flex items-center justify-between">
+              <div>
+                <div class="text-sm text-gray-medium">更新至 <span class="font-medium text-dark">24集</span></div>
+                <div class="text-xs text-gray-medium mt-1">每周一、三、五更新</div>
+              </div>
+              
+              <button class="bg-secondary hover:bg-secondary/90 text-white px-4 py-2 rounded-full text-sm flex items-center transition-all">
+                <i class="fa fa-diamond mr-2"></i>
+                充值解锁
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <div>
+          <h4 class="font-bold text-lg mb-4">剧集列表</h4>
+          
+          <div class="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-2">
+            <!-- 免费剧集 -->
+            <button class="episode-btn bg-primary text-white rounded-lg p-3 aspect-square flex flex-col items-center justify-center hover:bg-primary/90 transition-colors">
+              <span class="font-bold">1</span>
+              <span class="text-xs mt-1">免费</span>
+            </button>
+            <button class="episode-btn bg-primary text-white rounded-lg p-3 aspect-square flex flex-col items-center justify-center hover:bg-primary/90 transition-colors">
+              <span class="font-bold">2</span>
+              <span class="text-xs mt-1">免费</span>
+            </button>
+            <button class="episode-btn bg-primary text-white rounded-lg p-3 aspect-square flex flex-col items-center justify-center hover:bg-primary/90 transition-colors">
+              <span class="font-bold">3</span>
+              <span class="text-xs mt-1">免费</span>
+            </button>
+            <button class="episode-btn bg-primary text-white rounded-lg p-3 aspect-square flex flex-col items-center justify-center hover:bg-primary/90 transition-colors">
+              <span class="font-bold">4</span>
+              <span class="text-xs mt-1">免费</span>
+            </button>
+            <button class="episode-btn bg-primary text-white rounded-lg p-3 aspect-square flex flex-col items-center justify-center hover:bg-primary/90 transition-colors">
+              <span class="font-bold">5</span>
+              <span class="text-xs mt-1">免费</span>
+            </button>
+            
+            <!-- 付费剧集 -->
+            <button class="episode-btn bg-gray-100 text-gray-medium rounded-lg p-3 aspect-square flex flex-col items-center justify-center hover:bg-gray-200 transition-colors">
+              <span class="font-bold">6</span>
+              <span class="text-xs mt-1 flex items-center">
+                <i class="fa fa-lock mr-1 text-secondary"></i> 付费
+              </span>
+            </button>
+            <button class="episode-btn bg-gray-100 text-gray-medium rounded-lg p-3 aspect-square flex flex-col items-center justify-center hover:bg-gray-200 transition-colors">
+              <span class="font-bold">7</span>
+              <span class="text-xs mt-1 flex items-center">
+                <i class="fa fa-lock mr-1 text-secondary"></i> 付费
+              </span>
+            </button>
+            <button class="episode-btn bg-gray-100 text-gray-medium rounded-lg p-3 aspect-square flex flex-col items-center justify-center hover:bg-gray-200 transition-colors">
+              <span class="font-bold">8</span>
+              <span class="text-xs mt-1 flex items-center">
+                <i class="fa fa-lock mr-1 text-secondary"></i> 付费
+              </span>
+            </button>
+            <button class="episode-btn bg-gray-100 text-gray-medium rounded-lg p-3 aspect-square flex flex-col items-center justify-center hover:bg-gray-200 transition-colors">
+              <span class="font-bold">9</span>
+              <span class="text-xs mt-1 flex items-center">
+                <i class="fa fa-lock mr-1 text-secondary"></i> 付费
+              </span>
+            </button>
+            <button class="episode-btn bg-gray-100 text-gray-medium rounded-lg p-3 aspect-square flex flex-col items-center justify-center hover:bg-gray-200 transition-colors">
+              <span class="font-bold">10</span>
+              <span class="text-xs mt-1 flex items-center">
+                <i class="fa fa-lock mr-1 text-secondary"></i> 付费
+              </span>
+            </button>
+            
+            <!-- 更多剧集 -->
+            <button class="episode-btn bg-gray-100 text-gray-medium rounded-lg p-3 aspect-square flex flex-col items-center justify-center hover:bg-gray-200 transition-colors">
+              <span class="font-bold">11</span>
+              <span class="text-xs mt-1 flex items-center">
+                <i class="fa fa-lock mr-1 text-secondary"></i> 付费
+              </span>
+            </button>
+            <button class="episode-btn bg-gray-100 text-gray-medium rounded-lg p-3 aspect-square flex flex-col items-center justify-center hover:bg-gray-200 transition-colors">
+              <span class="font-bold">12</span>
+              <span class="text-xs mt-1 flex items-center">
+                <i class="fa fa-lock mr-1 text-secondary"></i> 付费
+              </span>
+            </button>
+            <button class="episode-btn bg-gray-100 text-gray-medium rounded-lg p-3 aspect-square flex flex-col items-center justify-center hover:bg-gray-200 transition-colors opacity-50">
+              <span class="font-bold">13</span>
+              <span class="text-xs mt-1">未更新</span>
+            </button>
+            <button class="episode-btn bg-gray-100 text-gray-medium rounded-lg p-3 aspect-square flex flex-col items-center justify-center hover:bg-gray-200 transition-colors opacity-50">
+              <span class="font-bold">14</span>
+              <span class="text-xs mt-1">未更新</span>
+            </button>
+            <button class="episode-btn bg-gray-100 text-gray-medium rounded-lg p-3 aspect-square flex flex-col items-center justify-center hover:bg-gray-200 transition-colors opacity-50">
+              <span class="font-bold">15</span>
+              <span class="text-xs mt-1">未更新</span>
+            </button>
+            
+            <div class="col-span-4 sm:col-span-5 md:col-span-6 flex justify-center mt-2">
+              <button class="text-primary hover:underline text-sm font-medium">
+                查看全部24集 <i class="fa fa-angle-down ml-1"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 充值模态框 -->
+  <div class="fixed inset-0 bg-black/70 z-50 hidden flex items-center justify-center p-4" id="rechargeModal">
+    <div class="bg-white rounded-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+      <div class="sticky top-0 bg-white z-10 px-6 py-4 border-b border-gray-100 flex justify-between items-center">
+        <h3 class="text-xl font-bold">充值会员</h3>
+        <button id="closeRechargeModal" class="text-gray-medium hover:text-dark">
+          <i class="fa fa-times text-xl"></i>
+        </button>
+      </div>
+      
+      <div class="p-6">
+        <div class="mb-6 text-center">
+          <p class="text-gray-medium mb-2">解锁全部剧集，畅享精彩内容</p>
+          <div class="inline-flex items-center bg-light px-3 py-1 rounded-full text-sm">
+            <i class="fa fa-info-circle text-primary mr-2"></i>
+            <span>充值后可观看所有付费剧集</span>
+          </div>
+        </div>
+        
+        <div class="space-y-4 mb-6">
+          <div class="border border-gray-200 rounded-xl p-4 hover:border-primary transition-colors cursor-pointer relative group">
+            <div class="absolute top-0 right-0 bg-primary text-white text-xs px-3 py-1 rounded-bl-lg rounded-tr-lg opacity-0 group-hover:opacity-100 transition-opacity">
+              推荐
+            </div>
+            <div class="flex justify-between items-center mb-2">
+              <h4 class="font-bold">月度会员</h4>
+              <div>
+                <span class="text-2xl font-bold text-dark">¥19</span>
+                <span class="text-gray-medium text-sm">/月</span>
+              </div>
+            </div>
+            <p class="text-gray-medium text-sm mb-3">30天会员有效期</p>
+            <ul class="space-y-2 mb-4">
+              <li class="flex items-center text-sm">
+                <i class="fa fa-check text-primary mr-2"></i>
+                <span>解锁所有付费剧集</span>
+              </li>
+              <li class="flex items-center text-sm">
+                <i class="fa fa-check text-primary mr-2"></i>
+                <span>高清画质</span>
+              </li>
+              <li class="flex items-center text-sm">
+                <i class="fa fa-check text-primary mr-2"></i>
+                <span>无广告观看</span>
+              </li>
+            </ul>
+            <button class="w-full bg-primary hover:bg-primary/90 text-white py-2 rounded-lg transition-colors">
+              立即充值
+            </button>
+          </div>
+          
+          <div class="border border-gray-200 rounded-xl p-4 hover:border-primary transition-colors cursor-pointer">
+            <div class="flex justify-between items-center mb-2">
+              <h4 class="font-bold">季度会员</h4>
+              <div>
+                <span class="text-2xl font-bold text-dark">¥49</span>
+                <span class="text-gray-medium text-sm">/3月</span>
+              </div>
+            </div>
+            <p class="text-gray-medium text-sm mb-3">90天会员有效期，省¥8</p>
+            <ul class="space-y-2 mb-4">
+              <li class="flex items-center text-sm">
+                <i class="fa fa-check text-primary mr-2"></i>
+                <span>解锁所有付费剧集</span>
+              </li>
+              <li class="flex items-center text-sm">
+                <i class="fa fa-check text-primary mr-2"></i>
+                <span>高清画质</span>
+              </li>
+              <li class="flex items-center text-sm">
+                <i class="fa fa-check text-primary mr-2"></i>
+                <span>无广告观看</span>
+              </li>
+              <li class="flex items-center text-sm">
+                <i class="fa fa-check text-primary mr-2"></i>
+                <span>专属客服</span>
+              </li>
+            </ul>
+            <button class="w-full bg-primary hover:bg-primary/90 text-white py-2 rounded-lg transition-colors">
+              立即充值
+            </button>
+          </div>
+          
+          <div class="border border-gray-200 rounded-xl p-4 hover:border-primary transition-colors cursor-pointer">
+            <div class="flex justify-between items-center mb-2">
+              <h4 class="font-bold">年度会员</h4>
+              <div>
+                <span class="text-2xl font-bold text-dark">¥169</span>
+                <span class="text-gray-medium text-sm">/年</span>
+              </div>
+            </div>
+            <p class="text-gray-medium text-sm mb-3">365天会员有效期，省¥59</p>
+            <ul class="space-y-2 mb-4">
+              <li class="flex items-center text-sm">
+                <i class="fa fa-check text-primary mr-2"></i>
+                <span>解锁所有付费剧集</span>
+              </li>
+              <li class="flex items-center text-sm">
+                <i class="fa fa-check text-primary mr-2"></i>
+                <span>高清画质</span>
+              </li>
+              <li class="flex items-center text-sm">
+                <i class="fa fa-check text-primary mr-2"></i>
+                <span>无广告观看</span>
+              </li>
+              <li class="flex items-center text-sm">
+                <i class="fa fa-check text-primary mr-2"></i>
+                <span>专属客服</span>
+              </li>
+              <li class="flex items-center text-sm">
+                <i class="fa fa-check text-primary mr-2"></i>
+                <span>新剧抢先看</span>
+              </li>
+            </ul>
+            <button class="w-full bg-primary hover:bg-primary/90 text-white py-2 rounded-lg transition-colors">
+              立即充值
+            </button>
+          </div>
+        </div>
+        
+        <div class="text-center text-xs text-gray-medium">
+          支付即表示同意《会员服务协议》和《自动续费服务规则》
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript -->
+  <script>
+    // 导航栏滚动效果
+    window.addEventListener('scroll', function() {
+      const header = document.querySelector('header');
+      if (window.scrollY > 50) {
+        header.classList.add('shadow-md');
+        header.classList.remove('shadow-sm');
+      } else {
+        header.classList.remove('shadow-md');
+        header.classList.add('shadow-sm');
+      }
+    });
+    
+    // 移动端搜索框切换
+    const searchToggle = document.getElementById('searchToggle');
+    const mobileSearch = document.getElementById('mobileSearch');
+    
+    searchToggle.addEventListener('click', function() {
+      mobileSearch.classList.toggle('hidden');
+    });
+    
+    // 剧集模态框控制
+    const episodeModal = document.getElementById('episodeModal');
+    const closeModal = document.getElementById('closeModal');
+    const dramaButtons = document.querySelectorAll('[data-drama-id]');
+    const modalDramaTitle = document.getElementById('modalDramaTitle');
+    const modalDramaGenre = document.getElementById('modalDramaGenre');
+    const modalDramaDesc = document.getElementById('modalDramaDesc');
+    
+    // 短剧数据
+    const dramas = {
+      1: { title: "古风奇缘", genre: "古装", desc: "跨越千年的爱恋，一场命中注定的相遇..." },
+      2: { title: "悬疑公寓", genre: "悬疑", desc: "每一层都有秘密，你敢住到第几层？" },
+      3: { title: "爱情密码", genre: "言情", desc: "数学家与艺术家的爱情，需要解开多少公式？" },
+      4: { title: "奇幻旅程", genre: "奇幻", desc: "误入魔法世界的少年，能否找到回家的路？" },
+      5: { title: "家庭趣事", genre: "喜剧", desc: "一家四口的搞笑日常，笑料不断..." },
+      6: { title: "极速追击", genre: "动作", desc: "警匪追逐，生死时速，正义与邪恶的较量" },
+      7: { title: "宫廷秘史", genre: "古装", desc: "深宫内院的权力游戏，步步惊心" },
+      8: { title: "未来世界", genre: "科幻", desc: "2077年的人机之恋，科技与人性的思考" },
+      9: { title: "乡村教师", genre: "剧情", desc: "用知识改变命运，一位教师的坚守" },
+      10: { title: "美食侦探", genre: "喜剧", desc: "舌尖上的谜案，美食与探案的完美结合" }
+    };
+    
+    dramaButtons.forEach(button => {
+      button.addEventListener('click', function() {
+        const dramaId = this.getAttribute('data-drama-id');
+        const drama = dramas[dramaId];
+        
+        if (drama) {
+          modalDramaTitle.textContent = drama.title;
+          modalDramaGenre.textContent = drama.genre;
+          modalDramaDesc.textContent = drama.desc;
+        }
+        
+        episodeModal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+      });
+    });
+    
+    closeModal.addEventListener('click', function() {
+      episodeModal.classList.add('hidden');
+      document.body.style.overflow = '';
+    });
+    
+    // 点击模态框外部关闭
+    episodeModal.addEventListener('click', function(e) {
+      if (e.target === episodeModal) {
+        episodeModal.classList.add('hidden');
+        document.body.style.overflow = '';
+      }
+    });
+    
+    // 充值模态框控制
+    const rechargeButtons = document.querySelectorAll('button:has(.fa-diamond), button:has(.fa-lock)');
+    const rechargeModal = document.getElementById('rechargeModal');
+    const closeRechargeModal = document.getElementById('closeRechargeModal');
+    
+    rechargeButtons.forEach(button => {
+      button.addEventListener('click', function() {
+        rechargeModal.classList.remove('hidden');
+        episodeModal.classList.add('hidden');
+        document.body.style.overflow = 'hidden';
+      });
+    });
+    
+    closeRechargeModal.addEventListener('click', function() {
+      rechargeModal.classList.add('hidden');
+      document.body.style.overflow = '';
+    });
+    
+    // 点击充值模态框外部关闭
+    rechargeModal.addEventListener('click', function(e) {
+      if (e.target === rechargeModal) {
+        rechargeModal.classList.add('hidden');
+        document.body.style.overflow = '';
+      }
+    });
+    
+    // 剧集按钮点击事件
+    const episodeBtns = document.querySelectorAll('.episode-btn');
+    episodeBtns.forEach(btn => {
+      btn.addEventListener('click', function() {
+        // 如果是付费剧集，打开充值模态框
+        if (this.querySelector('.fa-lock')) {
+          episodeModal.classList.add('hidden');
+          rechargeModal.classList.remove('hidden');
+        } else {
+          // 免费剧集，这里可以添加播放逻辑
+          alert('正在播放第' + this.querySelector('span:first-child').textContent + '集');
+        }
+      });
+    });
+    
+    // 页面加载动画
+    window.addEventListener('load', function() {
+      document.body.classList.add('opacity-100');
+      document.body.classList.remove('opacity-0');
+    });
+  </script>
+</body>
+</html>
